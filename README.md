@@ -134,8 +134,6 @@ t.test(diversity(Spp) ~ Env$Canopy)
 #?specpool #estimate the extrapolated species richness in a species pool, or the number of unobserved species
 (gobs <- ncol(Spp)) # 65
 (gthe <- specpool(Spp))
-#     Species     chao  chao.se    jack1 jack1.se    jack2     boot   boot.se   n
-# All      65 65.99868 2.329449 66.99735 1.412343 68.99206 65.83547 0.7493827 756
 
 #### Beta diversity ####
 ## Make matrix of 2018 data
