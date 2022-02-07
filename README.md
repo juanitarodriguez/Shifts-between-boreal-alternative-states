@@ -373,7 +373,7 @@ Mat1.TA.spp <- Mat1.TA %>%
 Mat2.TA.spp <- Mat2.TA %>%
   pivot_wider(names_from = Abbr, values_from = Coverage)
 #### Now I have spp tables ((Mat1.BS, Mat2.BS, Mat1.TA, Mat2.TA).spp) as I need.
-## I take a new table with the Treatment-plot names, because I need to eliminate it to do the analysis (must be numeric). I do the same for all the tables, in case something changed between the different tables, but they are the same, so I take just one in TP at the end.
+# I take a new table with the Treatment-plot names, because I need to eliminate it to do the analysis (must be numeric). I do the same for all the tables but they are the same, so I take just one in TP at the end.
 TP.BS.Mat1 <- as.matrix(Mat1.BS.spp$TP)
 TP.BS.Mat2 <- as.matrix(Mat2.BS.spp$TP)
 TP.TA.Mat1 <- as.matrix(Mat1.TA.spp$TP)
@@ -392,7 +392,7 @@ TA1 <- cbind(ID, Mat1.TA.spp)
 TA1$TP <- NULL
 TA2 <- cbind(ID, Mat2.TA.spp)
 TA2$TP <- NULL
-## Now, I got finally all the tables for the analysis: BS1.spe, BS2.spe, TA1, TA2
+# Now, I got finally all the tables for the analysis: BS1.spe, BS2.spe, TA1, TA2
 
 #### TBI Analysis per forest type
 BS1 <- as.data.frame(BS1)
@@ -573,17 +573,6 @@ res.BSTA<-annotate_figure(res.BSTA,left= text_grob(paste("PC axis 2 ","(", 100*r
 ggexport(plot.with.inset.BSTA, width = 8, height =8, filename = "PCA.hell-BSTA.pdf")
 
 ### !!! Tbio - PERMANOVA
-(ado.BSTA <- adonis2(PCA.crd.dec[, -1] ~ PCAD.BSTA$Year * PCAD.BSTA$Canopy * PCAD.BSTA$Treatment,
-                     method = "euc",
-                     by = "term"
-))
-
-(ado.BSTA2 <- adonis2(PCA.crd.dec[, -1] ~ PCAD.BSTA$Year * PCAD.BSTA$Canopy,
-                      method = "euc",
-                      by = "term"
-))
-
-## Good one with random!!!
 (ado.BSTA_random <- adonis2(PCA.crd.dec[, -1] ~ PCAD.BSTA$Year * PCAD.BSTA$Canopy * PCAD.BSTA$Treatment,
                             permutations = how(blocks = BSTA_SB$Site, nperm = 9999),
                             method = "euc",
@@ -677,12 +666,6 @@ res.BSTA.Tss<-annotate_figure(res.BSTA.Tss,left= text_grob(paste("PC axis 2 ","(
 ggexport(plot.with.inset.BSTA.Tss, width = 8, height =8, filename = "PCA.hell-BSTA.Tss.pdf")
 
 ### !!! Tss - PERMANOVA
-(ado.BSTA.Tss <- adonis2(PCA.crd.dec.Tss[, -1] ~ PCAD.BSTA.Tss$Year * PCAD.BSTA.Tss$Canopy * PCAD.BSTA.Tss$Treatment,
-                         method = "euc",
-                         by = "term"
-))
-
-## Good one with random!!!
 (ado.BSTA.Tss_random <- adonis2(PCA.crd.dec.Tss[, -1] ~ PCAD.BSTA.Tss$Year * PCAD.BSTA.Tss$Canopy * PCAD.BSTA.Tss$Treatment,
                                 permutations = how(blocks = BSTA.Tss_SB$Site, nperm = 9999),
                                 method = "euc",
@@ -726,12 +709,9 @@ is.euclid(BS.bray) #FALSE (Bad because then it has negative eigenvalues) Check P
 ## PCoA with pcoa function.
 BS.bray.pcoa1 <- pcoa(BS.bray, correction = "cailliez") # or use lingoez and see the difference (you should fever those two method instead of sqrt)
 biplot.pcoa(BS.bray.pcoa1)
-#Note: pcoa (library ape) - another way how to achieve PCoA analysis. Use biplot.pcoa function (or simply generic biplot) to project ordination diagram. Does not work with vegan's functions ordiplot or scores.
-# https://www.davidzeleny.net/anadat-r/doku.php/en:pcoa_nmds_r
 
 ## PCoA with cmdscale (by adding 'add = TRUE', I get the caillez correction)
 BS.bray.pcoa <- cmdscale(BS.bray, k=2, eig=TRUE, add = TRUE) #Multidimensional scaling (also known as PCoA)
-# dune.mds$species <- wascores(dune.mds$points, dune, expand = TRUE)
 
 ### !!! PCoA plot (with bray-curtis distance) - Save PDF as portrait 6x5 (name InR_PCoA_BS_Tbio)
 ordi.pcoa_BS <- ordiplot(BS.bray.pcoa, display="sites", type="points", cex = 0.2)
@@ -806,8 +786,6 @@ is.euclid(TA.bray) #FALSE (Bad because then it has negative eigenvalues) Check P
 ## PCoA with pcoa function.
 TA.bray.pcoa1 <- pcoa(TA.bray, correction = "cailliez") # or use lingoez and see the difference (you should fever those two method instead of sqrt)
 biplot.pcoa(TA.bray.pcoa1)
-#Note: pcoa (library ape) - another way how to achieve PCoA analysis. Use biplot.pcoa function (or simply generic biplot) to project ordination diagram. Does not work with vegan's functions ordiplot or scores.
-# https://www.davidzeleny.net/anadat-r/doku.php/en:pcoa_nmds_r
 
 ## PCoA with cmdscale (by adding 'add = TRUE', I get the caillez correction)
 TA.bray.pcoa <- cmdscale(TA.bray, k=2, eig=TRUE, add = TRUE) #Multidimansional scaling (also known as PCoA)
@@ -977,7 +955,6 @@ is.euclid(TA.bray_Tss) #FALSE (Bad because then it has negative eigenvalues) Che
 
 ## PCoA with cmdscale (by adding 'add = TRUE', I get the caillez correction)
 TA.bray.pcoa_Tss <- cmdscale(TA.bray_Tss, k=2, eig=TRUE, add = TRUE) #Multidimansional scaling (also known as PCoA)
-# dune.mds$species <- wascores(dune.mds$points, dune, expand = TRUE)
 
 ### !!! PCoA plot (with bray-curtis distance) - Save PDF as portrait 6x5 (name InR_PCoA_TA_Tss)
 ordi.pcoa_TA_Tss <- ordiplot(TA.bray.pcoa_Tss, display="sites", type="points", cex = 0.2, col="cornsilk2")
