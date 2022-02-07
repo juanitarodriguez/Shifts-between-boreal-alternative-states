@@ -262,7 +262,7 @@ LCBD.plot_TAT_ss <- ggplot(TA_Tss_spp, aes(x = TA_Tss_env$Treatment, y = res_TA_
                                 labels = c("c)", "d)"),
                                 ncol = 2, nrow = 2))
 
-## The analysis for the community approach (Tss) shoyuld be done together! So I create again a new Figure (Nop...finally I'll leave the Figure before with the 4 plots 08/06/2021)
+## Analysis for the community approach (Tss)
 Spp_18_Tss <- filter(Spp_2018, Treatment %in% c("C","Ti","To"))
 
 Spp_18_Tss_spp <- select(Spp_18_Tss, 6:71)
