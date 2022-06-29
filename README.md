@@ -49,6 +49,7 @@ Canopy <- split(Spp_All, Spp_All$Canopy)
 BS <- Canopy$'BS'
 TA <- Canopy$'TA'
 
+### Diversity indices
 ### Diversity indices ####
 ###	Alpha diversity of understory communities ####
 ### Specnumber
