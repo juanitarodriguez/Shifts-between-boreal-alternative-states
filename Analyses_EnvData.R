@@ -1,10 +1,11 @@
 ## Script information
 ### Script of the article entitled: Drivers of contrasting boreal understory vegetation in coniferous and broadleaf deciduous alternative states
 ### Article submitted to Ecological Monographs
-### Authors of the article: Juanita C. Rodríguez-Rodríguez, Nicole J. Fenton, Steven W. Kembel, Evick Mestre, Mélanie Jean, and Yves Bergeron
-### Script developed on 2021 by: Juanita C. Rodríguez-Rodríguez (e-mail: juanitacarolina.rodriguezrodriguez@uqat.ca), for my PhD in Environmental Sciences. A part of the script was developed during the statistical cours of Pierre Legendre.
+### Authors of the article: Juanita C. RodrÃ­guez-RodrÃ­guez, Nicole J. Fenton, Steven W. Kembel, Evick Mestre, MÃ©lanie Jean, and Yves Bergeron
+### Script developed on 2021 by: Juanita C. RodrÃ­guez-RodrÃ­guez (e-mail: juanitacarolina.rodriguezrodriguez@uqat.ca), for my PhD in Environmental Sciences. A part of the script was developed during the statistical cours of Pierre Legendre.
 ### Environmental data analysis for Chap1 data (I just have soil samples from 4 treatments but the other information for all treatments)
 
+## Load packages
 library(ggplot2)
 library(stats)
 library(nlme)
@@ -19,19 +20,17 @@ library(lsmeans)
 library(emmeans)
 library(lmerTest) #To include p values in lmer!
 
-### Soil data
+## Soil data
 setwd("Z:/UQAT/PhD PROJECT/5. Chapter 1 - OsV-UsV/0. Field work data/8. R Analysis/Env_variables")
 
 ## Load all data
-#DBEnv <- read.csv2("All_Env_2018_Spp.csv")
 DBEnv <- read.csv2("All_Env_2018_Spp(DatInput).csv")
 str(DBEnv)
-#Example for more changes: #B_EPN_Herbs <- mutate(EPN_Herbs, Site = as.factor(Site), Block = as.factor(Block))
 
 ## ANOVA tests for each environmental variable
 
-## Filter table to get only soil physicochemical properties from treatments C,1F,Ti,To
-### Separate by Treatments
+#### Filter table to get only soil physicochemical properties from treatments C,1F,Ti,To
+#### Separate by Treatments
 Treats <- split(DBEnv, DBEnv$Treatment)
 Tr_C <- Treats$'C'
 Tr_1F <- Treats$'1F'
@@ -40,12 +39,12 @@ Tr_To <- Treats$'To'
 
 Treats4 <- rbind(Tr_C,Tr_1F,Tr_Ti,Tr_To)
 
-#Order levels of the factor  so I do  comparisons of C versus all
+####Order levels of the factor  so I do  comparisons of C versus all
 DBEnv$Treatment <- factor(DBEnv$Treatment, levels=c("C","Li","Nu","1F","2F","To","Ti"))
 DBEnv$Site <- as.factor(DBEnv$Site)
 DBEnv$Block <- as.factor(DBEnv$Block)
 
-### Separate by Canopy (Vordach)
+#### Separate by Canopy (Vordach)
 Vor <- split(DBEnv, DBEnv$Canopy)
 Vor_BS <- Vor$'BS'
 Vor_TA <- Vor$'TA'
@@ -53,19 +52,18 @@ Vor_TA <- Vor$'TA'
 Farben <- c("azure3","gold","mediumpurple1","tan1","lightcoral","chartreuse","paleturquoise2","azure4","goldenrod","darkorchid3","orangered","red3","lightseagreen","forestgreen")
 Farben_Treats4 <- c("azure3","lightcoral","paleturquoise2","chartreuse")
 
-### Analysis per variable
-## STEPS:
-# STEP1: Get mean and SD for each variable per Canopy for the different treatments
-# STEP2: Do lineal model and anova to get differences between Canopy, Treatment and the interaction of both
-# STEP3: Make contrasts emmeans to assign letters and if Treatments or the interaction were also different (not only Canopy), then check the contrasts for treatments to assign capital letters
-# STEP4: Figure
+## Analysis per variable - STEPS:
+### STEP1: Get mean and SD for each variable per Canopy for the different treatments
+### STEP2: Do lineal model and anova to get differences between Canopy, Treatment and the interaction of both
+### STEP3: Make contrasts emmeans to assign letters and if Treatments or the interaction were also different (not only Canopy), then check the contrasts for treatments to assign capital letters
+### STEP4: Figure
 
-#### Hum ####
-## STEP1 (meand and SD) Hum
-# BS Hum
+## Hum ####
+### STEP1 (meand and SD) Hum
+#### BS Hum
 aggregate(Vor_BS$Hum, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$Hum, list(Vor_BS$Treatment), FUN=sd)
-# TA Hum
+#### TA Hum
 aggregate(Vor_TA$Hum, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$Hum, list(Vor_TA$Treatment), FUN=sd)
 
@@ -90,12 +88,12 @@ Hum_Fig <- DBEnv %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### Temp ####
-## STEP1 (meand and SD) Temp
-# BS Temp
+## Temp ####
+### STEP1 (meand and SD) Temp
+#### BS Temp
 aggregate(Vor_BS$Temp, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$Temp, list(Vor_BS$Treatment), FUN=sd)
-# TA Temp
+#### TA Temp
 aggregate(Vor_TA$Temp, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$Temp, list(Vor_TA$Treatment), FUN=sd)
 
@@ -105,7 +103,7 @@ anova(Temp_mod)
 
 ### STEP3 (contrasts emmeans of Contro vs. Treatments for each Canopy) Temp
 Temp_emm <- emmeans(Temp_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "response")
-#Letters
+####Letters
 Temp_emm_let <- multcomp::cld(object = Temp_emm$emmeans,
                               
                               Letters = letters,no.readonly=TRUE)
@@ -121,12 +119,12 @@ Temp_Fig <- DBEnv %>%
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
 
-#### Light ####
-## STEP1 (meand and SD) Light
-# BS Light
+## Light ####
+### STEP1 (meand and SD) Light
+#### BS Light
 aggregate(Vor_BS$Light, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$Light, list(Vor_BS$Treatment), FUN=sd)
-# TA Light
+#### TA Light
 aggregate(Vor_TA$Light, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$Light, list(Vor_TA$Treatment), FUN=sd)
 
@@ -136,7 +134,7 @@ anova(Light_mod)
 
 ### STEP3 (contrasts emmeans of Contro vs. Treatments for each Canopy) Light
 Light_emm <- emmeans(Light_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "response")
-#Letters
+####Letters
 Light_emm_let <- multcomp::cld(object = Light_emm$emmeans,
                                
                                Letters = letters,no.readonly=TRUE)
@@ -159,12 +157,12 @@ Light_Fig2 <- DBEnv %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white")) # PDF 4x6 landscape (To extract light contrast)
 
-#### OverDen ####
-## STEP1 (meand and SD) OverDen
-# BS OverDen
+## OverDen ####
+### STEP1 (meand and SD) OverDen
+#### BS OverDen
 aggregate(Vor_BS$OverDen, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$OverDen, list(Vor_BS$Treatment), FUN=sd)
-# TA OverDen
+#### TA OverDen
 aggregate(Vor_TA$OverDen, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$OverDen, list(Vor_TA$Treatment), FUN=sd)
 
@@ -200,24 +198,23 @@ OverDen_Fig2 <- DBEnv %>%
 
 ## All Figs together
 ggarrange(C_per_Fig,N_per_Fig,K_per_Fig,Mg_per_Fig,Ca_per_Fig,Na_per_Fig,H_per_Fig,P_mg_Fig,Al_mg_Fig,Mn_mg_Fig,Fe_mg_Fig,S_mg_Fig,CEC_Fig,C_N_Fig,N_P_Fig,P_Al_Fig,P_Ca_Fig,pH_H2O_Fig,pH_buf_Fig,Temp_Fig,Hum_Fig,Light_Fig,OverDen_Fig, ncol = 4, nrow = 6, common.legend = TRUE, labels="auto")
-## All Figs with sig. differences together PDF 7x10 landscape
+#### All Figs with sig. differences together PDF 7x10 landscape
 All_Env_Fig <- ggarrange(Temp_Fig,Hum_Fig,Light_Fig,OverDen_Fig, ncol = 2, nrow = 2, common.legend = TRUE, labels="auto")
 All_Env_Fig
 
-#### Soil physico-chemical properties ####
-### Analysis per variable
-## STEPS:
-# STEP1: Get mean and SD for each variable per Canopy for the different treatments
-# STEP2: Do lineal model and anova to get differences between Canopy, Treatment and the interaction of both
-# STEP3: Make contrasts emmeans to assign letters and if Treatments or the interaction were also different (not only Canopy), then check the contrasts for treatments to assign capital letters
-# STEP4: Figure
+# Soil physico-chemical properties ####
+## Analysis per variable - STEPS:
+#### STEP1: Get mean and SD for each variable per Canopy for the different treatments
+### STEP2: Do lineal model and anova to get differences between Canopy, Treatment and the interaction of both
+### STEP3: Make contrasts emmeans to assign letters and if Treatments or the interaction were also different (not only Canopy), then check the contrasts for treatments to assign capital letters
+### STEP4: Figure
 
-#### C_per (%) ####
-## STEP1 (meand and SD) C_per
-# BS C_per (%)
+## C_per (%) ####
+### STEP1 (meand and SD) C_per
+#### BS C_per (%)
 aggregate(Vor_BS$C_per, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$C_per, list(Vor_BS$Treatment), FUN=sd)
-# TA C_per (%)
+#### TA C_per (%)
 aggregate(Vor_TA$C_per, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$C_per, list(Vor_TA$Treatment), FUN=sd)
 
@@ -230,7 +227,7 @@ C_per_emm <- emmeans(C_per_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "
 C_per_emm
 emmeans(C_per_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 C_per_emm_let <- multcomp::cld(object = C_per_emm$emmeans,
                                  
                                  Letters = letters,no.readonly=TRUE)
@@ -246,12 +243,12 @@ C_per_Fig <- Treats4 %>%
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
 
-#### N_per (%) ####
-## STEP1 (meand and SD) N_per
-# BS N_per (%)
+## N_per (%) ####
+### STEP1 (meand and SD) N_per
+#### BS N_per (%)
 aggregate(Vor_BS$N_per, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$N_per, list(Vor_BS$Treatment), FUN=sd)
-# TA N_per (%)
+#### TA N_per (%)
 aggregate(Vor_TA$N_per, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$N_per, list(Vor_TA$Treatment), FUN=sd)
 
@@ -279,12 +276,12 @@ N_per_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### K_per (%) ####
-## STEP1 (meand and SD) K_per
-# BS K_per (%)
+## K_per (%) ####
+### STEP1 (meand and SD) K_per
+#### BS K_per (%)
 aggregate(Vor_BS$K_per, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$K_per, list(Vor_BS$Treatment), FUN=sd)
-# TA K_per (%)
+#### TA K_per (%)
 aggregate(Vor_TA$K_per, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$K_per, list(Vor_TA$Treatment), FUN=sd)
 
@@ -297,7 +294,7 @@ K_per_emm <- emmeans(K_per_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "
 K_per_emm
 emmeans(K_per_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 K_per_emm_let <- multcomp::cld(object = K_per_emm$emmeans,
                                
                                Letters = letters,no.readonly=TRUE)
@@ -312,12 +309,12 @@ K_per_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### Mg_per (%) ####
-## STEP1 (meand and SD) Mg_per
-# BS Mg_per (%)
+## Mg_per (%) ####
+### STEP1 (meand and SD) Mg_per
+#### BS Mg_per (%)
 aggregate(Vor_BS$Mg_per, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$Mg_per, list(Vor_BS$Treatment), FUN=sd)
-# TA Mg_per (%)
+#### TA Mg_per (%)
 aggregate(Vor_TA$Mg_per, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$Mg_per, list(Vor_TA$Treatment), FUN=sd)
 
@@ -330,7 +327,7 @@ Mg_per_emm <- emmeans(Mg_per_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type =
 Mg_per_emm
 emmeans(Mg_per_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 Mg_per_emm_let <- multcomp::cld(object = Mg_per_emm$emmeans,
                                 
                                 Letters = letters,no.readonly=TRUE)
@@ -345,12 +342,12 @@ Mg_per_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### Ca_per (%) ####
-## STEP1 (meand and SD) Ca_per
-# BS Ca_per (%)
+## Ca_per (%) ####
+### STEP1 (meand and SD) Ca_per
+#### BS Ca_per (%)
 aggregate(Vor_BS$Ca_per, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$Ca_per, list(Vor_BS$Treatment), FUN=sd)
-# TA Ca_per (%)
+#### TA Ca_per (%)
 aggregate(Vor_TA$Ca_per, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$Ca_per, list(Vor_TA$Treatment), FUN=sd)
 
@@ -363,7 +360,7 @@ Ca_per_emm <- emmeans(Ca_per_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type =
 Ca_per_emm
 emmeans(Ca_per_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 Ca_per_emm_let <- multcomp::cld(object = Ca_per_emm$emmeans,
                                 
                                 Letters = letters,no.readonly=TRUE)
@@ -378,12 +375,12 @@ Ca_per_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### Na_per (%) ####
-## STEP1 (meand and SD) Na_per
-# BS Na_per (%)
+## Na_per (%) ####
+### STEP1 (meand and SD) Na_per
+#### BS Na_per (%)
 aggregate(Vor_BS$Na_per, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$Na_per, list(Vor_BS$Treatment), FUN=sd)
-# TA Na_per (%)
+#### TA Na_per (%)
 aggregate(Vor_TA$Na_per, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$Na_per, list(Vor_TA$Treatment), FUN=sd)
 
@@ -396,7 +393,7 @@ Na_per_emm <- emmeans(Na_per_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type =
 Na_per_emm
 emmeans(Na_per_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 Na_per_emm_let <- multcomp::cld(object = Na_per_emm$emmeans,
                                 
                                 Letters = letters,no.readonly=TRUE)
@@ -411,12 +408,12 @@ Na_per_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### H_per (%) ####
-## STEP1 (meand and SD) H_per
-# BS H_per (%)
+## H_per (%) ####
+### STEP1 (meand and SD) H_per
+#### BS H_per (%)
 aggregate(Vor_BS$H_per, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$H_per, list(Vor_BS$Treatment), FUN=sd)
-# TA H_per (%)
+#### TA H_per (%)
 aggregate(Vor_TA$H_per, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$H_per, list(Vor_TA$Treatment), FUN=sd)
 
@@ -429,7 +426,7 @@ H_per_emm <- emmeans(H_per_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "
 H_per_emm
 emmeans(H_per_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 H_per_emm_let <- multcomp::cld(object = H_per_emm$emmeans,
                                
                                Letters = letters,no.readonly=TRUE)
@@ -444,12 +441,12 @@ H_per_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### P_mg (%) ####
-## STEP1 (meand and SD) P_mg
-# BS P_mg (%)
+## P_mg (%) ####
+### STEP1 (meand and SD) P_mg
+#### BS P_mg (%)
 aggregate(Vor_BS$P_mg, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$P_mg, list(Vor_BS$Treatment), FUN=sd)
-# TA P_mg (%)
+#### TA P_mg (%)
 aggregate(Vor_TA$P_mg, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$P_mg, list(Vor_TA$Treatment), FUN=sd)
 
@@ -462,7 +459,7 @@ P_mg_emm <- emmeans(P_mg_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "re
 P_mg_emm
 emmeans(P_mg_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 P_mg_emm_let <- multcomp::cld(object = P_mg_emm$emmeans,
                               
                               Letters = letters,no.readonly=TRUE)
@@ -477,12 +474,12 @@ P_mg_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### Al_mg (%) ####
-## STEP1 (meand and SD) Al_mg
-# BS Al_mg (%)
+## Al_mg (%) ####
+### STEP1 (meand and SD) Al_mg
+#### BS Al_mg (%)
 aggregate(Vor_BS$Al_mg, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$Al_mg, list(Vor_BS$Treatment), FUN=sd)
-# TA Al_mg (%)
+#### TA Al_mg (%)
 aggregate(Vor_TA$Al_mg, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$Al_mg, list(Vor_TA$Treatment), FUN=sd)
 
@@ -495,7 +492,7 @@ Al_mg_emm <- emmeans(Al_mg_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "
 Al_mg_emm
 emmeans(Al_mg_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 Al_mg_emm_let <- multcomp::cld(object = Al_mg_emm$emmeans,
                                
                                Letters = letters,no.readonly=TRUE)
@@ -510,12 +507,12 @@ Al_mg_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### Mn_mg (%) ####
-## STEP1 (meand and SD) Mn_mg
-# BS Mn_mg (%)
+## Mn_mg (%) ####
+### STEP1 (meand and SD) Mn_mg
+#### BS Mn_mg (%)
 aggregate(Vor_BS$Mn_mg, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$Mn_mg, list(Vor_BS$Treatment), FUN=sd)
-# TA Mn_mg (%)
+#### TA Mn_mg (%)
 aggregate(Vor_TA$Mn_mg, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$Mn_mg, list(Vor_TA$Treatment), FUN=sd)
 
@@ -528,7 +525,7 @@ Mn_mg_emm <- emmeans(Mn_mg_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "
 Mn_mg_emm
 emmeans(Mn_mg_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 Mn_mg_emm_let <- multcomp::cld(object = Mn_mg_emm$emmeans,
                                
                                Letters = letters,no.readonly=TRUE)
@@ -543,12 +540,12 @@ Mn_mg_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### Fe_mg (%) ####
-## STEP1 (meand and SD) Fe_mg
-# BS Fe_mg (%)
+## Fe_mg (%) ####
+### STEP1 (meand and SD) Fe_mg
+#### BS Fe_mg (%)
 aggregate(Vor_BS$Fe_mg, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$Fe_mg, list(Vor_BS$Treatment), FUN=sd)
-# TA Fe_mg (%)
+#### TA Fe_mg (%)
 aggregate(Vor_TA$Fe_mg, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$Fe_mg, list(Vor_TA$Treatment), FUN=sd)
 
@@ -561,7 +558,7 @@ Fe_mg_emm <- emmeans(Fe_mg_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "
 Fe_mg_emm
 emmeans(Fe_mg_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 Fe_mg_emm_let <- multcomp::cld(object = Fe_mg_emm$emmeans,
                                
                                Letters = letters,no.readonly=TRUE)
@@ -576,12 +573,12 @@ Fe_mg_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### S_mg (%) ####
-## STEP1 (meand and SD) S_mg
-# BS S_mg (%)
+## S_mg (%) ####
+### STEP1 (meand and SD) S_mg
+#### BS S_mg (%)
 aggregate(Vor_BS$S_mg, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$S_mg, list(Vor_BS$Treatment), FUN=sd)
-# TA S_mg (%)
+#### TA S_mg (%)
 aggregate(Vor_TA$S_mg, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$S_mg, list(Vor_TA$Treatment), FUN=sd)
 
@@ -594,7 +591,7 @@ S_mg_emm <- emmeans(S_mg_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "re
 S_mg_emm
 emmeans(S_mg_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 S_mg_emm_let <- multcomp::cld(object = S_mg_emm$emmeans,
                               
                               Letters = letters,no.readonly=TRUE)
@@ -609,12 +606,12 @@ S_mg_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### CEC (%) ####
-## STEP1 (meand and SD) CEC
-# BS CEC (%)
+## CEC (%) ####
+### STEP1 (meand and SD) CEC
+#### BS CEC (%)
 aggregate(Vor_BS$CEC, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$CEC, list(Vor_BS$Treatment), FUN=sd)
-# TA CEC (%)
+#### TA CEC (%)
 aggregate(Vor_TA$CEC, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$CEC, list(Vor_TA$Treatment), FUN=sd)
 
@@ -627,7 +624,7 @@ CEC_emm <- emmeans(CEC_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "resp
 CEC_emm
 emmeans(CEC_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 CEC_emm_let <- multcomp::cld(object = CEC_emm$emmeans,
                              
                              Letters = letters,no.readonly=TRUE)
@@ -642,12 +639,12 @@ CEC_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### C_N (%) ####
-## STEP1 (meand and SD) C_N
-# BS C_N (%)
+## C_N (%) ####
+### STEP1 (meand and SD) C_N
+#### BS C_N (%)
 aggregate(Vor_BS$C_N, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$C_N, list(Vor_BS$Treatment), FUN=sd)
-# TA C_N (%)
+#### TA C_N (%)
 aggregate(Vor_TA$C_N, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$C_N, list(Vor_TA$Treatment), FUN=sd)
 
@@ -660,7 +657,7 @@ C_N_emm <- emmeans(C_N_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "resp
 C_N_emm
 emmeans(C_N_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 C_N_emm_let <- multcomp::cld(object = C_N_emm$emmeans,
                              
                              Letters = letters,no.readonly=TRUE)
@@ -675,12 +672,12 @@ C_N_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### N_P (%) ####
-## STEP1 (meand and SD) N_P
-# BS N_P (%)
+## N_P (%) ####
+### STEP1 (meand and SD) N_P
+#### BS N_P (%)
 aggregate(Vor_BS$N_P, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$N_P, list(Vor_BS$Treatment), FUN=sd)
-# TA N_P (%)
+#### TA N_P (%)
 aggregate(Vor_TA$N_P, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$N_P, list(Vor_TA$Treatment), FUN=sd)
 
@@ -693,10 +690,7 @@ N_P_emm <- emmeans(N_P_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "resp
 N_P_emm
 emmeans(N_P_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#N_P_emm2 <- emmeans(N_P_mod, ~ Canopy:Treatment, data = Treats4)
-#pairs(N_P_emm2, simple = list("Canopy", "Treatment")) #Gives different results for control (BS-TA) P = 0.0501! and in Ti (BS-TA) P = 0.0261
-
-#Letters
+####Letters
 N_P_emm_let <- multcomp::cld(object = N_P_emm$emmeans,
                              
                              Letters = letters,no.readonly=TRUE)
@@ -711,12 +705,12 @@ N_P_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### P_Al (%) ####
-## STEP1 (meand and SD) P_Al
-# BS P_Al (%)
+## P_Al (%) ####
+### STEP1 (meand and SD) P_Al
+#### BS P_Al (%)
 aggregate(Vor_BS$P_Al, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$P_Al, list(Vor_BS$Treatment), FUN=sd)
-# TA P_Al (%)
+#### TA P_Al (%)
 aggregate(Vor_TA$P_Al, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$P_Al, list(Vor_TA$Treatment), FUN=sd)
 
@@ -729,7 +723,7 @@ P_Al_emm <- emmeans(P_Al_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "re
 P_Al_emm
 emmeans(P_Al_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 P_Al_emm_let <- multcomp::cld(object = P_Al_emm$emmeans,
                               
                               Letters = letters,no.readonly=TRUE)
@@ -744,12 +738,12 @@ P_Al_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### P_Ca (%) ####
-## STEP1 (meand and SD) P_Ca
-# BS P_Ca (%)
+## P_Ca (%) ####
+### STEP1 (meand and SD) P_Ca
+#### BS P_Ca (%)
 aggregate(Vor_BS$P_Ca, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$P_Ca, list(Vor_BS$Treatment), FUN=sd)
-# TA P_Ca (%)
+#### TA P_Ca (%)
 aggregate(Vor_TA$P_Ca, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$P_Ca, list(Vor_TA$Treatment), FUN=sd)
 
@@ -762,7 +756,7 @@ P_Ca_emm <- emmeans(P_Ca_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type = "re
 P_Ca_emm
 emmeans(P_Ca_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 P_Ca_emm_let <- multcomp::cld(object = P_Ca_emm$emmeans,
                               
                               Letters = letters,no.readonly=TRUE)
@@ -777,12 +771,12 @@ P_Ca_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### pH_H2O (%) ####
-## STEP1 (meand and SD) pH_H2O
-# BS pH_H2O (%)
+## pH_H2O (%) ####
+### STEP1 (meand and SD) pH_H2O
+#### BS pH_H2O (%)
 aggregate(Vor_BS$pH_H2O, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$pH_H2O, list(Vor_BS$Treatment), FUN=sd)
-# TA pH_H2O (%)
+#### TA pH_H2O (%)
 aggregate(Vor_TA$pH_H2O, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$pH_H2O, list(Vor_TA$Treatment), FUN=sd)
 
@@ -795,7 +789,7 @@ pH_H2O_emm <- emmeans(pH_H2O_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type =
 pH_H2O_emm
 emmeans(pH_H2O_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 pH_H2O_emm_let <- multcomp::cld(object = pH_H2O_emm$emmeans,
                                 
                                 Letters = letters,no.readonly=TRUE)
@@ -810,12 +804,12 @@ pH_H2O_Fig <- Treats4 %>%
   theme(panel.background = element_rect(fill = "white", colour = "black")) + 
   theme(strip.background = element_rect(colour = "black", fill = "white"))
 
-#### pH_buf (%) ####
-## STEP1 (meand and SD) pH_buf
-# BS pH_buf (%)
+## pH_buf (%) ####
+### STEP1 (meand and SD) pH_buf
+#### BS pH_buf (%)
 aggregate(Vor_BS$pH_buf, list(Vor_BS$Treatment), FUN=mean)
 aggregate(Vor_BS$pH_buf, list(Vor_BS$Treatment), FUN=sd)
-# TA pH_buf (%)
+#### TA pH_buf (%)
 aggregate(Vor_TA$pH_buf, list(Vor_TA$Treatment), FUN=mean)
 aggregate(Vor_TA$pH_buf, list(Vor_TA$Treatment), FUN=sd)
 
@@ -828,7 +822,7 @@ pH_buf_emm <- emmeans(pH_buf_mod, specs = trt.vs.ctrl ~ Treatment|Canopy, type =
 pH_buf_emm
 emmeans(pH_buf_mod, specs = trt.vs.ctrl ~ Canopy*Treatment, type = "response") #To check BS-TA for C
 
-#Letters
+####Letters
 pH_buf_emm_let <- multcomp::cld(object = pH_buf_emm$emmeans,
                                 
                                 Letters = letters,no.readonly=TRUE)
@@ -845,8 +839,8 @@ pH_buf_Fig <- Treats4 %>%
 
 ## All Figs together
 ggarrange(C_per_Fig,N_per_Fig,K_per_Fig,Mg_per_Fig,Ca_per_Fig,Na_per_Fig,H_per_Fig,P_mg_Fig,Al_mg_Fig,Mn_mg_Fig,Fe_mg_Fig,S_mg_Fig,CEC_Fig,C_N_Fig,N_P_Fig,P_Al_Fig,P_Ca_Fig,pH_H2O_Fig,pH_buf_Fig,Temp_Fig,Hum_Fig,Light_Fig,OverDen_Fig, ncol = 4, nrow = 6, common.legend = TRUE, labels="auto")
-## All Figs with sig. differences together
-#ggarrange(C_per_Fig,N_per_Fig,Ca_per_Fig,Na_per_Fig,H_per_Fig,P_mg_Fig,Al_mg_Fig,Mn_mg_Fig,Fe_mg_Fig,S_mg_Fig,C_N_Fig,N_P_Fig,P_Al_Fig,pH_H2O_Fig,pH_buf_Fig, ncol = 5, nrow = 3, common.legend = TRUE, labels="auto")
-
-
+#### All Figs with sig. differences together
+ggarrange(C_per_Fig,N_per_Fig,Ca_per_Fig,Na_per_Fig,H_per_Fig,P_mg_Fig,Al_mg_Fig,Mn_mg_Fig,Fe_mg_Fig,S_mg_Fig,C_N_Fig,N_P_Fig,P_Al_Fig,pH_H2O_Fig,pH_buf_Fig, ncol = 5, nrow = 3, common.legend = TRUE, labels="auto")
 ggarrange(C_per_Fig,Na_per_Fig,P_mg_Fig,Al_mg_Fig,Fe_mg_Fig,S_mg_Fig,C_N_Fig,N_P_Fig,P_Al_Fig, ncol = 3, nrow = 3, common.legend = TRUE, labels="auto")
+
+# - END
