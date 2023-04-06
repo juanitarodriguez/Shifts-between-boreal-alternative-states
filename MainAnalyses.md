@@ -1,5 +1,6 @@
 ## Script information
 ### Script of the article entitled: Drivers of contrasting boreal understory vegetation in coniferous and broadleaf deciduous alternative states
+### Article submitted to Ecological Monographs
 ### Authors of the article: Juanita C. Rodríguez-Rodríguez, Nicole J. Fenton, Steven W. Kembel, Evick Mestre, Mélanie Jean, and Yves Bergeron
 ### Script developed on 2021 by: Juanita C. Rodríguez-Rodríguez (e-mail: juanitacarolina.rodriguezrodriguez@uqat.ca), for my PhD in Environmental Sciences. A part of the script was developed during the statistical cours of Pierre Legendre.
 
