@@ -69,7 +69,8 @@ div.plot2 <- ggplot(Spp, aes(x = Env$Treatment, y = diversity(Spp, index = "shan
 div.plot2
 
 ## ANOVA of alpha diversity
-## Table S2. Differences in α-diversity (Shannon-Weiner index) based on the ANOVA of the linear mixed effect model of understory species abundance to evaluate the factors of Year, Forest type, Treatment and all interactions, using Sites and Blocks as nested random factors.
+## Table S2. 
+### Differences in α-diversity (Shannon-Weiner index) based on the ANOVA of the linear mixed effect model of understory species abundance to evaluate the factors of Year, Forest type, Treatment and all interactions, using Sites and Blocks as nested random factors.
 set.seed(1989)
 div.aov5 <- lmer(Div.spp ~ Year*Canopy*Treatment + (1|Site/Block), data = Env)
 summary(div.aov5)
