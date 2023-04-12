@@ -104,7 +104,7 @@ Spp_18 <- select(Spp_2018, 6:70)
 Env_18 <- select(Spp_2018, 1:7)
 
 # Non-directional approach: Partitioning beta diversity ####
-## Compute beta diversity with function beta.div() of adepsatial
+## Compute beta diversity with function beta.div() of adespatial
 #### B.div for each objective separately and each canopy
 
 #### Separate by Canopy
