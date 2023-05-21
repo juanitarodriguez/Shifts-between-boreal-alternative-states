@@ -26,7 +26,7 @@ library(ggbeeswarm) #For geom_quasirandom()
 library(lmerTest) #To include p values in lmer
 
 ## Load all data and prepare tables
-DB_All <- read.csv2("DB_AllData2.csv")
+DB_All <- read.csv2("Understory_veg_JR.csv")
 DB_All2 <- DB_All
 
 #### Prepare a species table with all variables
